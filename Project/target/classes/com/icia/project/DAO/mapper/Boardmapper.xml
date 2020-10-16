@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+ <mapper namespace="Board"> 
+	<insert id="boardinsert" parameterType="board">
+		INSERT INTO BOARD (BNUMBER, BWRITER, BTITLE, BCONTENTS, BDATE, BHITS, BFILENAME)	
+			VALUES(BOARD_SEQ.NEXTVAL, #{bwriter}, #{btitle}, #{bcontents}, SYSDATE, 0, #{bfilename})
+	</insert>
+	<select id="boardlistcount" resultType="int">
+		SELECT COUNT(BNUMBER) FROM BOARD
+	</select>
+	
+	<select id="boardlist" parameterType="page" resultType="board">
+		SELECT * FROM (SELECT B.*, ROW_NUMBER() OVER(ORDER BY BNUMBER DESC)
+			AS RN FROM BOARD B) WHERE RN BETWEEN #{startRow} AND #{endRow}
+	</select>
+	
+	<update id="boardhits" parameterType="int">
+		UPDATE BOARD SET BHITS=BHITS+1 WHERE BNUMBER=#{bnumber}
+	</update>
+	
+	<select id="boardview" parameterType="int" resultType="board">
+		SELECT * FROM BOARD WHERE BNUMBER=#{bnumber}
+	</select>
+	
+	<update id="boardupdate" parameterType="board">
+		UPDATE BOARD SET BTITLE=#{btitle}, BCONTENTS=#{bcontents} WHERE BNUMBER=#{bnumber}
+	</update>
+	
+	<delete id="boarddelete" parameterType="int">
+		DELETE FROM BOARD WHERE BNUMBER=#{bnumber}
+	</delete>
+	
+	<!-- 검색페이징 카운트 -->
+	<select id="Searchcount" resultType="int" parameterType="java.util.HashMap">
+		SELECT COUNT(BNUMBER) FROM BOARD 
+		<include refid="searchcount"></include>
+	</select>
+	<sql id="searchcount">
+		<choose>
+			<when test="type=='searchtitle'">
+				WHERE BTITLE LIKE '%'||#{word}||'%'
+			</when>
+			<when test="type=='searchwrtier'">
+				WHERE BWRTIER LIKE '%'||#{word}||'%'
+			</when>
+		</choose>
+	</sql>
+	
+	<!-- 검색 -->
+	<select id="boardSearch" resultType="board" parameterType="page">
+		SELECT * FROM 
+			<include refid="search"></include>
+			<!-- refid = sql id -->
+	</select>
+	<sql id="search">
+		<choose>
+			<when test="searchtype=='searchtitle'">
+				(SELECT B.*, ROW_NUMBER() OVER(ORDER BY BNUMBER DESC) AS RN FROM BOARD B WHERE BTITLE LIKE '%'||#{keyword}||'%') WHERE RN BETWEEN #{startRow} AND #{endRow}
+			</when>
+			<when test="searchtype=='searchwriter'">
+				(SELECT B.*, ROW_NUMBER() OVER(ORDER BY BNUMBER DESC) AS RN FROM BOARD B WHERE BWRITER LIKE '%'||#{keyword}||'%') WHERE RN BETWEEN #{startRow} AND #{endRow}
+			</when>
+		</choose>
+	</sql>
+ </mapper>
