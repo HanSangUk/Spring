@@ -10,7 +10,9 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.icia.project.DAO.BoardDAO;
+import com.icia.project.DAO.CommentDAO;
 import com.icia.project.DTO.BoardDTO;
+import com.icia.project.DTO.CommentDTO;
 import com.icia.project.DTO.PageDTO;
 
 @Service
@@ -22,13 +24,18 @@ public class BoardService {
 	@Autowired
 	private BoardDAO bDAO;
 	
+	@Autowired
+	private CommentDAO cDAO;
+	
 	private ModelAndView mav;
 	
+	//게시글 작성
 	public ModelAndView boardinsert(BoardDTO bDTO) throws IllegalStateException, IOException {
 		mav = new ModelAndView();
 		MultipartFile bfile = bDTO.getBfile();
 		String bfilename = bfile.getOriginalFilename();
-		String savePath = "D:\\source\\spring\\Project\\src\\main\\webapp\\resources\\uploadFile\\"+bfilename;
+		bfilename = System.currentTimeMillis() + "_" + bfilename;
+		String savePath = "C:\\Users\\1\\git\\Spring\\Project\\src\\main\\webapp\\resources\\uploadFile\\"+bfilename;
 		if(!bfile.isEmpty()) {
 			bfile.transferTo(new File(savePath));
 		}
@@ -41,7 +48,7 @@ public class BoardService {
 		}
 		return mav;
 	}
-
+	//게시글 리스트 페이징
 	public ModelAndView boardlist(int page) {
 		mav = new ModelAndView();
 		int boardlistcount = bDAO.boardlistcount();
@@ -74,8 +81,10 @@ public class BoardService {
 	public ModelAndView boardview(int bnumber, int page) {
 		mav = new ModelAndView();
 		int result = bDAO.boardhits(bnumber);
+		List<CommentDTO> commentlist = cDAO.commentlist(bnumber);
 		if(result > 0) {
 			BoardDTO bDTO = bDAO.boardview(bnumber);
+			mav.addObject("boardcomment", commentlist);
 			mav.addObject("boardview", bDTO);
 			mav.addObject("page", page);
 			mav.setViewName("boardv/BoardView");
@@ -84,7 +93,7 @@ public class BoardService {
 		}
 		return mav;
 	}
-
+	//게시글수정 페이지 이동
 	public ModelAndView boardupdate(int bnumber, int page) {
 		mav = new ModelAndView();
 		BoardDTO bDTO = bDAO.boardview(bnumber);
@@ -93,13 +102,27 @@ public class BoardService {
 		mav.setViewName("boardv/BoardUpdate");
 		return mav;
 	}
-
-	public ModelAndView boardupdateform(BoardDTO bDTO, int page, int bnumber) {
+	//게시글 수정
+	public ModelAndView boardupdateform(BoardDTO bDTO, int page, int bnumber) throws IllegalStateException, IOException {
 		mav = new ModelAndView();
+		MultipartFile bfile = bDTO.getBfile();
+		String bfilename = bfile.getOriginalFilename();
+		System.out.println("파일이름 : "+bfilename);
+		String preexistence = bDTO.getPreexistence();
+		if(bfilename.length()==0) {
+			bDTO.setBfilename(preexistence);
+		} else {
+			bfilename = System.currentTimeMillis() + "_" + bfilename;
+			String savePath = "C:\\Users\\1\\git\\Spring\\Project\\src\\main\\webapp\\resources\\uploadFile\\"+bfilename;
+			if(!bfile.isEmpty()) {
+				bfile.transferTo(new File(savePath));
+			}
+			bDTO.setBfilename(bfilename);
+		}
+	
 		int result = bDAO.boardupdate(bDTO);
 		if(result>0) {
-			mav.addObject("page", page);
-			mav.setViewName("redirect:/boardview?bnumber="+bnumber);
+			mav.setViewName("redirect:/boardview?bnumber="+bnumber+"&page="+page);
 		} else {
 			mav.setViewName("Fail");
 		}
@@ -146,5 +169,7 @@ public class BoardService {
 		mav.setViewName("boardv/BoardSearchList");
 		return mav;
 	}
+
+	
 
 }

@@ -16,15 +16,15 @@ public class BoardDAO {
 	
 	@Autowired
 	private SqlSessionTemplate sql;
-	
+	//게시글 작성 DAO
 	public int boardinsert(BoardDTO bDTO) {
 		return sql.insert("Board.boardinsert", bDTO);
 	}
-
+	//게시글 수
 	public int boardlistcount() {
 		return sql.selectOne("Board.boardlistcount");
 	}
-
+	//게시글 리스트(목록)
 	public List<BoardDTO> boardlist(PageDTO paging) {
 		return sql.selectList("Board.boardlist", paging);
 	}
@@ -36,7 +36,7 @@ public class BoardDAO {
 	public int boardhits(int bnumber) {
 		return sql.update("Board.boardhits", bnumber);
 	}
-
+	//게시글 수정 DAO
 	public int boardupdate(BoardDTO bDTO) {
 		return sql.update("Board.boardupdate", bDTO);
 	}
@@ -54,6 +54,16 @@ public class BoardDAO {
 
 	public List<BoardDTO> searchlist(PageDTO paging) {
 		return sql.selectList("Board.boardSearch", paging);
+	}
+	
+	//마이페이지 본인글
+	public List<BoardDTO> mypagelist(String bwriter) {
+		return sql.selectList("Board.mypage", bwriter);
+	}
+	
+	//마이페이지 본인글 카운트
+	public int mypagecount(String bwriter) {
+		return sql.selectOne("Board.mypagecount", bwriter);
 	}
 
 }

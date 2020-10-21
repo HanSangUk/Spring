@@ -23,9 +23,7 @@
 				<td><button onclick="location.href='memberdelete?mid=${memberlist.mid}'">삭제</button></td>
 			</tr>
 		</c:forEach>
-		
 	</table>
-
 	<!-- 페이징 처리 -->
 	<c:if test="${paging.page<=1}">
 	[이전]&nbsp;
@@ -45,11 +43,9 @@
 			</c:otherwise>
 		</c:choose>
 	</c:forEach>
-
 	<c:if test="${paging.page>=paging.maxPage}">
 		[다음]
 	</c:if>
-	
 	<c:if test="${paging.page<paging.maxPage}">
 		<a href="memberlistpaging?page=${paging.page+1}">[다음]</a>
 	</c:if>

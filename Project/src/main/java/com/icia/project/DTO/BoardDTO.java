@@ -18,8 +18,9 @@ public class BoardDTO {
 	private String bcontents;
 	private Date bdate;
 	private int bhits;
-	
+	private String preexistence;
 	private String bfilename;
-	private String bfilenameupdate;
 	private MultipartFile bfile;
+	
+	private String gdsThumbImg;
 }

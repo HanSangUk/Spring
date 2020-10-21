@@ -13,12 +13,12 @@
 		INSERT INTO MEMBER (MID, MPASSWORD, MNAME, MBIRTH, MEMAIL, MPHONE, MADDRESS1, MADDRESS2, MADDRESS3, MADDRESS4, MFILENAME) 
 			VALUES(#{mid}, #{mpassword}, #{mname}, #{mbirth}, #{memail}, #{mphone}, #{maddress1}, #{maddress2}, #{maddress3}, #{maddress4}, #{mfilename})
 	</insert>
-	
+	<!-- 카카오아이디로 회원가입 -->
 	<insert id="kakaoMemberJoin" parameterType="member">
 		INSERT INTO MEMBER (MID, MPASSWORD, MNAME, MBIRTH, MEMAIL, MPHONE, MADDRESS1, MADDRESS2, MADDRESS3, MADDRESS4, KAKAOID, MFILENAME) 
 			VALUES(#{mid}, #{mpassword}, #{mname}, #{mbirth}, #{memail}, #{mphone}, #{maddress1}, #{maddress2}, #{maddress3}, #{maddress4}, #{kakaoId}, #{mfilename})
 	</insert>
-	
+	<!-- 네이버아이디로 회원가입 -->
 	<insert id="naverMemberJoin" parameterType="member">
 		INSERT INTO MEMBER (MID, MPASSWORD, MNAME, MBIRTH, MEMAIL, MPHONE, MADDRESS1, MADDRESS2, MADDRESS3, MADDRESS4, NAVERID, MFILENAME) 
 			VALUES(#{mid}, #{mpassword}, #{mname}, #{mbirth}, #{memail}, #{mphone}, #{maddress1}, #{maddress2}, #{maddress3}, #{maddress4}, #{naverId}, #{mfilename})
@@ -52,9 +52,10 @@
 	<select id="naverLogin" parameterType="String" resultType="String">
 		SELECT MID FROM member WHERE NAVERID=#{naverId}
 	</select>
-	
+	<!-- 회원정보수정 -->
 	<update id="memberupdate" parameterType="member">
-		UPDATE MEMBER SET MEMAIL=#{memail}, MPHONE=#{mphone}, MADDRESS1=#{maddress1}, MADDRESS2=#{maddress2}, MADDRESS3=#{maddress3}, MADDRESS4=#{maddress4} WHERE MID=#{mid}
+		UPDATE MEMBER SET MEMAIL=#{memail}, MPHONE=#{mphone}, MADDRESS1=#{maddress1}, MADDRESS2=#{maddress2}, 
+							MADDRESS3=#{maddress3}, MADDRESS4=#{maddress4} WHERE MID=#{mid}
 	</update>
 	
 	<delete id="memberdelete" parameterType="String">

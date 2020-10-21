@@ -15,7 +15,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.icia.project.DAO.BoardDAO;
 import com.icia.project.DAO.MemberDAO;
+import com.icia.project.DTO.BoardDTO;
 import com.icia.project.DTO.MemberDTO;
 import com.icia.project.DTO.PageDTO;
 
@@ -24,6 +26,9 @@ public class MemberService {
 
 	@Autowired
 	private MemberDAO mDAO;
+	
+	@Autowired
+	private BoardDAO bDAO;
 	
 	@Autowired
 	private HttpSession session;
@@ -51,7 +56,7 @@ public class MemberService {
 		MultipartFile mfile = mDTO.getMfile();
 		String mfilename = mfile.getOriginalFilename();
 		
-		String savePath = "D:\\source\\spring\\Project\\src\\main\\webapp\\resources\\uploadFile\\"+mfilename;
+		String savePath = "C:\\Users\\1\\git\\Spring\\Project\\src\\main\\webapp\\resources\\uploadFile\\"+mfilename;
 		if(!mfile.isEmpty()) {
 			mfile.transferTo(new File(savePath));
 		}
@@ -76,7 +81,7 @@ public class MemberService {
 		}
 		return mav;
 	}
-
+	//회원목록페이징
 	public ModelAndView memberlist(int page) {
 		mav = new ModelAndView();
 		int mlistCount = mDAO.memberCount();
@@ -138,7 +143,7 @@ public class MemberService {
 		
 		return mav;
 	}
-
+	//회원수정페이지 이동
 	public ModelAndView memberupdate(String mid) {
 		mav = new ModelAndView();
 		MemberDTO mDTO = mDAO.memberview(mid);
@@ -147,7 +152,7 @@ public class MemberService {
 		mav.setViewName("memberv/MemberUpdate");
 		return mav;
 	}
-
+	//회원정보 수정
 	public ModelAndView memberupdateform(MemberDTO update) {
 		mav = new ModelAndView();
 		int result = mDAO.memberupdateform(update);
@@ -167,6 +172,36 @@ public class MemberService {
 		} else {
 			mav.setViewName("Fail");
 		}
+		return mav;
+	}
+
+	public ModelAndView mypage(String bwriter, int page) {
+		mav = new ModelAndView();
+		int boardlistcount = bDAO.mypagecount(bwriter);
+		int startRow = (page-1)*PAGE_LIMIT+1;
+		int endRow = page*PAGE_LIMIT;
+		
+		PageDTO paging = new PageDTO();
+		paging.setStartRow(startRow);
+		paging.setEndRow(endRow);
+		paging.setSearchtype("searchwriter");
+		paging.setKeyword(bwriter);
+		List<BoardDTO> boardlist = bDAO.searchlist(paging);
+		int maxPage = (int)(Math.ceil((double)boardlistcount/PAGE_LIMIT));
+		int startPage = (((int)(Math.ceil((double)page/BLOCK_LIMIT))) -1) * BLOCK_LIMIT +1;
+		                     // Math.ceil = 그냥 반올림
+		int endPage = startPage + BLOCK_LIMIT - 1;
+		if(endPage>maxPage) {
+			endPage = maxPage;
+		}
+		
+		paging.setPage(page);
+		paging.setStartPage(startPage);
+		paging.setEndPage(endPage);
+		paging.setMaxPage(maxPage);
+		mav.addObject("paging", paging);
+		mav.addObject("myboard", boardlist);
+		mav.setViewName("memberv/MyPage");
 		return mav;
 	}
 

@@ -9,10 +9,11 @@
 </head>
 <body>
 <h1>회원</h1>
+	${sessionScope.loginId}님 어서오세요 <br>
 	<c:if test="${sessionScope.loginId eq 'admin'}">
 		<button onclick="location.href='memberlistpaging'">회원목록</button>
 	</c:if>
-	<button onclick="location.href='memberupdate?mid=${sessionScope.loginId}'">회원정보수정</button><br>
+	<button onclick="location.href='mypage?bwriter=${sessionScope.loginId}'">마이페이지</button><br>
 	<button onclick="location.href='logout'">로그아웃</button>
 <br>
 <h1>게시판</h1>

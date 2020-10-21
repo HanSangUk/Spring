@@ -6,6 +6,7 @@ import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.icia.project.DTO.BoardDTO;
 import com.icia.project.DTO.MemberDTO;
 import com.icia.project.DTO.PageDTO;
 
@@ -36,12 +37,12 @@ public class MemberDAO {
 		return sql.selectOne("Member.login", memberlogin);
 	}
 
-
+	//회원목록
 	public List<MemberDTO> memberlist(PageDTO paging) {
 		return sql.selectList("Member.memberlist", paging);
 	}
 
-
+	//회원수
 	public int memberCount() {
 		return sql.selectOne("Member.Count");
 	}
@@ -61,7 +62,7 @@ public class MemberDAO {
 		return sql.selectOne("Member.naverLogin", naverId);
 	}
 
-
+	//회원정보수정
 	public int memberupdateform(MemberDTO update) {
 		return sql.update("Member.memberupdate", update);
 	}
@@ -70,5 +71,7 @@ public class MemberDAO {
 	public int memberdelete(String mid) {
 		return sql.delete("Member.memberdelete", mid);
 	}
+
+
 
 }

@@ -87,6 +87,13 @@ public class MemberController {
 		return "home";
 	}
 	
+	//마이페이지 이동
+	@RequestMapping(value="/mypage")
+	public ModelAndView mypage(@RequestParam(value="bwriter") String bwriter,  @RequestParam(value="page", required=false, defaultValue="1")int page) {
+		mav = ms.mypage(bwriter, page);
+		return mav;
+	}
+	
 	//회원목록페이징
 	@RequestMapping(value="/memberlistpaging")
 	public ModelAndView memberlist(@RequestParam(value="page", required=false, defaultValue="1")int page) {

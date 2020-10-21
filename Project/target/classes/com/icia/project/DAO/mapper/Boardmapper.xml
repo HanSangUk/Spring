@@ -3,14 +3,16 @@
  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
  
  <mapper namespace="Board"> 
+ 	<!-- 게시글 작성 mapper -->
 	<insert id="boardinsert" parameterType="board">
 		INSERT INTO BOARD (BNUMBER, BWRITER, BTITLE, BCONTENTS, BDATE, BHITS, BFILENAME)	
 			VALUES(BOARD_SEQ.NEXTVAL, #{bwriter}, #{btitle}, #{bcontents}, SYSDATE, 0, #{bfilename})
 	</insert>
+	<!-- 게시글 수 mapper -->
 	<select id="boardlistcount" resultType="int">
 		SELECT COUNT(BNUMBER) FROM BOARD
 	</select>
-	
+	<!-- 게시글 리스트 mapper -->
 	<select id="boardlist" parameterType="page" resultType="board">
 		SELECT * FROM (SELECT B.*, ROW_NUMBER() OVER(ORDER BY BNUMBER DESC)
 			AS RN FROM BOARD B) WHERE RN BETWEEN #{startRow} AND #{endRow}
@@ -23,9 +25,9 @@
 	<select id="boardview" parameterType="int" resultType="board">
 		SELECT * FROM BOARD WHERE BNUMBER=#{bnumber}
 	</select>
-	
+	<!-- 게시글 수정 mapper -->
 	<update id="boardupdate" parameterType="board">
-		UPDATE BOARD SET BTITLE=#{btitle}, BCONTENTS=#{bcontents} WHERE BNUMBER=#{bnumber}
+		UPDATE BOARD SET BTITLE=#{btitle}, BCONTENTS=#{bcontents}, BFILENAME=#{bfilename} WHERE BNUMBER=#{bnumber}
 	</update>
 	
 	<delete id="boarddelete" parameterType="int">
@@ -64,4 +66,13 @@
 			</when>
 		</choose>
 	</sql>
+	
+	<!-- 마이페이지 -->
+	<select id="mypage" parameterType="String" resultType="board">
+		SELECT * FROM BOARD WHERE BWRITER=#{bwriter}
+	</select>
+	
+	<select id="mypagecount" parameterType="String" resultType="int">
+		SELECT COUNT(BNUMBER) FROM BOARD WHERE BWRITER=#{bwriter}
+	</select>
  </mapper>
