@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+ <mapper namespace="ComMember"> 
+ 
+ 	<!-- 기업회원가입 -->
+	<insert id="ComMemberInsert" parameterType="commember">
+		INSERT INTO COMMEMBER(COMNUMBER, COMPASSWORD, COMADDRESS1, COMADDRESS2, COMADDRESS3, COMADDRESS4, COMPHONE, COMPANY, COMOFFICE) 
+			VALUES(#{comnumber}, #{compassword}, #{comaddress1}, #{comaddress2}, #{comaddress3}, #{comaddress4}, #{comphone}, #{company}, #{comoffice})
+	</insert>
+	
+	<!-- 기업로그인 -->
+	<select id="ComLoginForm" parameterType="commember" resultType="String">
+		SELECT COMNUMBER FROM COMMEMBER WHERE COMNUMBER=#{comnumber} AND COMPASSWORD=#{compassword}
+	</select>
+
+	<!-- 기업회원정보수정페이지 이동 -->
+	<select id="ComMemberUpdate" parameterType="String" resultType="commember">
+		SELECT * FROM COMMEMBER WHERE COMNUMBER=#{comnumber}
+	</select>
+	
+	<!-- 기업회원정보수정 -->
+	<update id="ComMemberUpdateForm" parameterType="commember">
+		UPDATE COMMEMBER SET COMPASSWORD=#{compassword}, COMPHONE=#{comphone}, COMOFFICE=#{comoffice}, COMADDRESS1=#{comaddress1}, COMADDRESS2=#{comaddress2}, COMADDRESS3=#{comaddress3}, COMADDRESS4=#{comaddress4} WHERE COMNUMBER=#{comnumber}
+	</update>
+	
+	<!-- 기업회원탈퇴 -->
+	<delete id="ComMemberDeleteForm" parameterType="commember">
+		DELETE FROM COMMEMBER WHERE COMNUMBER=#{comnumber} AND COMPASSWORD=#{compassword}
+	</delete>
+	
+	<!-- 마이페이지 -->
+	<select id="ComMyPage" parameterType="String" resultType="commember">
+		SELECT * FROM COMMEMBER WHERE COMNUMBER=#{comnumber}
+	</select>
+	
+ </mapper>
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
